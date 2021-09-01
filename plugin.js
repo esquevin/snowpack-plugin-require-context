@@ -71,7 +71,7 @@ async function require_context(filePath) {
     let regExp = args[2] && new RegExp(args[2].regex.pattern, args[2].regex.flags);
 
     // add directory to the list to be watched for changes
-    dirs.push(directory);
+    // dirs.push(directory);
 
     // get a list of files in a given directory matching a given pattern,
     // optionally recursively.
@@ -118,21 +118,7 @@ async function require_context(filePath) {
         replace(/^\w/, c => c.toUpperCase()).
         replace(/[-_]\w/g, c => c[1].toUpperCase()).replace(/\W/g, '$'))
         .join('_');
-    });
-
-    // add an import for each module to the list of prepends
-    files.forEach((file, i) => {
-      imports.push({
-        type: "ImportDeclaration",
-        specifiers: [
-          {
-            type: "ImportDefaultSpecifier",
-            local: { type: "Identifier", name: modules[i] }
-          }
-        ],
-        source: { type: "Literal", value: file, raw: JSON.stringify(file) }
-      })
-    });
+   });
 
     // build a list of files
     let contextKeys = {
@@ -140,81 +126,6 @@ async function require_context(filePath) {
       elements: keys.map(file => (
         { type: "Literal", value: file, raw: JSON.stringify(file) }
       ))
-    };
-
-    // build a map of files to {default: modules} object literals
-    let contextMap = {
-      type: "ObjectExpression",
-      properties: keys.map((key, i) => ({
-        type: "Property",
-        method: false,
-        shorthand: false,
-        computed: false,
-        key: { type: "Literal", value: key, raw: JSON.stringify(key) },
-        value: {
-          type: "ObjectExpression",
-          properties: [{
-            type: "Property",
-            method: false,
-            shorthand: false,
-            computed: false,
-            key: { type: "Identifier", name: "default" },
-            value: { type: "Identifier", name: modules[i] },
-            kind: "init"
-          }]
-        },
-        kind: "init"
-      }))
-    };
-
-    let contextFn = {
-      type: "VariableDeclaration",
-      declarations: [
-        {
-          type: "VariableDeclarator",
-          id: { type: "Identifier", name: "context" },
-          init: {
-            type: "ArrowFunctionExpression",
-            id: null,
-            expression: true,
-            generator: false,
-            async: false,
-            params: [{ type: "Identifier", name: "id" }],
-            body: {
-              type: "MemberExpression",
-              object: contextMap,
-              property: { type: "Identifier", name: "id" },
-              computed: true,
-              optional: false
-            }
-          }
-        }
-      ],
-      kind: "let"
-    };
-
-    let keyFn = {
-      type: "ExpressionStatement",
-      expression: {
-        type: "AssignmentExpression",
-        operator: "=",
-        left: {
-          type: "MemberExpression",
-          object: { type: "Identifier", name: "context" },
-          property: { type: "Identifier", name: "keys" },
-          computed: false,
-          optional: false
-        },
-        right: {
-          type: "ArrowFunctionExpression",
-          id: null,
-          expression: true,
-          generator: false,
-          async: false,
-          params: [],
-          body: contextKeys
-        }
-      }
     };
 
     let contextExpr = {
@@ -229,14 +140,11 @@ async function require_context(filePath) {
         body: {
           type: "BlockStatement",
           body: [
-            contextFn,
-            keyFn,
+            // contextFn,
+            // keyFn,
             {
               type: "ReturnStatement",
-              argument: {
-                type: "Identifier",
-                name: "context"
-              }
+              argument: contextKeys
             }
           ]
         }
@@ -282,7 +190,7 @@ module.exports = function (snowpackConfig, pluginOptions) {
     onChange({ filePath }) {
       for (const [source, dirs] of Object.entries(dirWatchers)) {
         if (dirs.some(dir => filePath.startsWith(dir))) {
-          this.markChanged(source)
+          // this.markChanged(source)
         }
       }
     },

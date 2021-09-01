@@ -1,8 +1,8 @@
 {
-  "name": "@rubys/snowpack-plugin-require-context",
+  "name": "@esquevin/snowpack-plugin-list-files",
   "version": "0.0.5",
-  "description": "require-context plugin for Snowpack",
-  "author": "Sam Ruby <rubys@intertwingly.net>",
+  "description": "require-context return list of files plugin for Snowpack",
+  "author": "Forked from Sam Ruby <rubys@intertwingly.net>",
   "license": "MIT",
   "engines": {
     "node": ">=12.0.0"
@@ -16,7 +16,7 @@
   "main": "plugin.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rubys/snowpack-plugin-require-context/"
+    "url": "https://github.com/esquevin/snowpack-plugin-require-context/"
   },
   "publishConfig": {
     "access": "public"
